@@ -1,16 +1,9 @@
 const ScormCloud = require("@rusticisoftware/scormcloud-api-v2-client-javascript");
-const fs = require("fs");
-
 const prompt = require("prompt-sync")({ sigint: true });
 
 // ScormCloud API credentials
 const APP_ID = "CFEMPE5NBD";
 const SECRET_KEY = "tou1MG3iMgHeePjPPhjo52NzK6aplONjz50OWNen";
-
-// Sample values for data
-const COURSE_PATH =
-  "/Users/manikant/Data/CAW/rustici-poc/backend/employee-health-and-wellness-sample-course-scorm12-0B2a3WZM.zip";
-let COURSE_FILE;
 
 const COURSE_ID = "JS_SAMPLE_COURSE";
 const LEARNER_ID = "JS_SAMPLE_COURSE_LEARNER";
@@ -20,7 +13,7 @@ const REGISTRATION_ID = "JS_SAMPLE_COURSclE_REGISTRATION";
 const OUTPUT_BORDER =
   "---------------------------------------------------------\n";
 
-async function createCourseRoot() {
+async function createCourseRoot(COURSE_FILE) {
   // Configure HTTP basic authorization: APP_NORMAL
   const APP_NORMAL =
     ScormCloud.ApiClient.instance.authentications["APP_NORMAL"];
@@ -197,8 +190,8 @@ function getResultForRegistration(registrationId, callback) {
   function getResultForRegistrationLogic() {
     const APP_NORMAL =
       ScormCloud.ApiClient.instance.authentications["APP_NORMAL"];
-    APP_NORMAL.username = "CFEMPE5NBD";
-    APP_NORMAL.password = "tou1MG3iMgHeePjPPhjo52NzK6aplONjz50OWNen";
+    APP_NORMAL.username = APP_ID;
+    APP_NORMAL.password = SECRET_KEY;
 
     const registrationApi = new ScormCloud.RegistrationApi();
     registrationApi.getRegistrationProgress(
@@ -288,8 +281,6 @@ function cleanUp(courseId, registrationId) {
 
   cleanUpLogic();
 }
-
-COURSE_FILE = fs.createReadStream(COURSE_PATH);
 
 module.exports = {
   createCourseRoot,
