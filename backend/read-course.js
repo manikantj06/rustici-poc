@@ -1,5 +1,6 @@
 // Import the module.
 const ScormCloud = require("@rusticisoftware/scormcloud-api-v2-client-javascript");
+const { ScormClient } = require("scormcloud-client");
 const APP_ID = "CFEMPE5NBD";
 const SECRET_KEY = "tou1MG3iMgHeePjPPhjo52NzK6aplONjz50OWNen";
 
@@ -26,6 +27,19 @@ function getAllCourses(callback) {
   getAllCoursesLogic();
 }
 
+async function getAllCourses2() {
+  const client = new ScormClient(APP_ID, SECRET_KEY, "read");
+  const course = await client.getCourses();
+  return course;
+}
+
+async function getLaunchLink() {
+  const client = new ScormClient(APP_ID, SECRET_KEY, "read");
+  const link = await client.createLaunchLink(APP_ID, '');
+  return link
+}
+
 module.exports = {
-  getAllCourses,
+  getAllCourses: getAllCourses2,
+  getLaunchLink
 };

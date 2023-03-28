@@ -1,12 +1,14 @@
 const express = require("express");
-const { getAllCourses } = require("./read-course");
+const { getAllCourses, getLaunchLink } = require("./read-course");
 const { createCourseRoot } = require("./write-course");
 const app = express();
 const port = 8000;
 const multer = require("multer");
 const fs = require("fs");
+const cors = require("cors");
 
 app.use(express.urlencoded());
+app.use(cors());
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -22,9 +24,8 @@ const upload = multer({ dest: "./uploads/" });
 
 // API to get all courses
 app.get("/course", async (req, res) => {
-  getAllCourses((courses) => {
-    res.send(courses);
-  });
+  const course = await getAllCourses();
+  res.send(course);
 });
 
 // API to handle post request with .zip file
@@ -42,6 +43,7 @@ app.post("/course", upload.single("uploaded_file"), async function (req, res) {
     const filePath = req.file.path;
     const data = fs.createReadStream(filePath);
     await createCourseRoot(data);
+    // https://cloud.scorm.com/api/cloud/registration/launch/21f48a62-6ebd-4df8-bfee-e0e767840288
     res.status(204);
   } catch (ex) {
     console.log("Error", ex);
@@ -51,6 +53,11 @@ app.post("/course", upload.single("uploaded_file"), async function (req, res) {
   // ...
 
   res.send("File uploaded and processed successfully");
+});
+
+app.get("/course-link", async (req, res) => {
+  const link = await getLaunchLink();
+  res.send(link);
 });
 
 // Start the server
