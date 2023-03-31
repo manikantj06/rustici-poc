@@ -1,45 +1,35 @@
 // Import the module.
 const ScormCloud = require("@rusticisoftware/scormcloud-api-v2-client-javascript");
+const { log } = require("console");
 const { ScormClient } = require("scormcloud-client");
 const APP_ID = "CFEMPE5NBD";
 const SECRET_KEY = "tou1MG3iMgHeePjPPhjo52NzK6aplONjz50OWNen";
+const REGISTRATION_ID = "test-register";
+const COURSE_ID = "JS_SAMPLE_COURSE";
+const LEARNER_ID = "test-learner";
 
-function getAllCourses(callback) {
-  function getAllCoursesLogic() {
-    const APP_NORMAL =
-      ScormCloud.ApiClient.instance.authentications["APP_NORMAL"];
-    APP_NORMAL.username = APP_ID;
-    APP_NORMAL.password = SECRET_KEY;
+const learner = {
+  id: LEARNER_ID,
+  email: "m.j@cawstudios.com",
+  firstName: "Manikant",
+  lastName: "Jha",
+};
 
-    const courseApi = new ScormCloud.CourseApi();
-    const courseIdFilter = "";
-    const courseSearchOptions = { courseIdFilter: courseIdFilter };
-    courseApi.getCourses(courseSearchOptions, function (error, data) {
-      if (error) {
-        console.log(error.response.text);
-        return;
-      }
-
-      callback(data.courses);
-    });
-  }
-
-  getAllCoursesLogic();
-}
-
-async function getAllCourses2() {
+async function getAllCourses() {
   const client = new ScormClient(APP_ID, SECRET_KEY, "read");
   const course = await client.getCourses();
   return course;
 }
 
 async function getLaunchLink() {
-  const client = new ScormClient(APP_ID, SECRET_KEY, "read");
-  const link = await client.createLaunchLink(APP_ID, '');
-  return link
+  let client = new ScormClient(APP_ID, SECRET_KEY, "write:registration");
+  client.deleteRegistration()
+  // client = await client.createRegistration(REGISTRATION_ID, COURSE_ID, learner);
+  const link = await client.createLaunchLink(APP_ID, "");
+  return link;
 }
 
 module.exports = {
-  getAllCourses: getAllCourses2,
-  getLaunchLink
+  getAllCourses,
+  getLaunchLink,
 };
