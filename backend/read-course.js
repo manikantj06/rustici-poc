@@ -1,6 +1,5 @@
 // Import the module.
 const ScormCloud = require("@rusticisoftware/scormcloud-api-v2-client-javascript");
-const { log } = require("console");
 const { ScormClient } = require("scormcloud-client");
 const APP_ID = "CFEMPE5NBD";
 const SECRET_KEY = "tou1MG3iMgHeePjPPhjo52NzK6aplONjz50OWNen";
@@ -21,12 +20,40 @@ async function getAllCourses() {
   return course;
 }
 
-async function getLaunchLink() {
+async function getAllRegistrations() {
+  let client = new ScormClient(APP_ID, SECRET_KEY, "read");
+  const registrations = await client.getRegistrations();
+  return registrations;
+}
+
+async function checkIfRegistrationExists(registrationId) {
+  let client = new ScormClient(APP_ID, SECRET_KEY, "read");
+  const isAlreadyRegistered = await client.registrationExists(registrationId);
+  return isAlreadyRegistered;
+}
+
+async function registerUser(user) {
   let client = new ScormClient(APP_ID, SECRET_KEY, "write:registration");
-  client.deleteRegistration()
-  // client = await client.createRegistration(REGISTRATION_ID, COURSE_ID, learner);
-  const link = await client.createLaunchLink(APP_ID, "");
-  return link;
+  client.createRegistration(user.registrationId, user.courseId, user.learner);
+}
+
+async function getLaunchLink() {
+  let client = new ScormClient(APP_ID, SECRET_KEY, "read");
+  const isAlreadyRegistered = await checkIfRegistrationExists(REGISTRATION_ID);
+
+  if (!isAlreadyRegistered) {
+    await registerUser({
+      registrationId: REGISTRATION_ID,
+      courseId: COURSE_ID,
+      learner,
+    });
+  }
+
+  const launchLink = await client.createLaunchLink(
+    REGISTRATION_ID,
+    "google.com"
+  );
+  return launchLink;
 }
 
 module.exports = {
