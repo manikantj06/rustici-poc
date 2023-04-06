@@ -37,6 +37,11 @@ async function registerUser(user) {
   client.createRegistration(user.registrationId, user.courseId, user.learner);
 }
 
+async function deleteRegistration(registrationId) {
+  let client = new ScormClient(APP_ID, SECRET_KEY, "write:registration");
+  client.deleteRegistration(registrationId);
+}
+
 async function getLaunchLink() {
   let client = new ScormClient(APP_ID, SECRET_KEY, "read");
   const isAlreadyRegistered = await checkIfRegistrationExists(REGISTRATION_ID);

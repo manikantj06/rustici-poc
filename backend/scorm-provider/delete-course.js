@@ -10,6 +10,17 @@ const LEARNER_ID = "JS_SAMPLE_COURSE_LEARNER";
 const REGISTRATION_ID = "JS_SAMPLE_COURSclE_REGISTRATION";
 const { ScormClient } = require("scormcloud-client");
 
+async function createNewCourse(req, res) {
+  const client = new ScormClient(APP_ID, SECRET_KEY, "write:course");
+  const a = await client.uploadCourseVersionAssetFile(
+    COURSE_ID,
+    1,
+    "../employee-health-and-wellness-sample-course-scorm12-0B2a3WZM.zip",
+    "/"
+  );
+  return a;
+}
+
 async function deleteCourse(req, res) {
   const client = new ScormClient(APP_ID, SECRET_KEY, "delete:course");
   await client.deleteCourse(COURSE_ID);
@@ -18,4 +29,5 @@ async function deleteCourse(req, res) {
 
 module.exports = {
   deleteCourse,
+  createNewCourse,
 };
