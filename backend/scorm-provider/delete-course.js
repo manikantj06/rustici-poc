@@ -10,4 +10,12 @@ const LEARNER_ID = "JS_SAMPLE_COURSE_LEARNER";
 const REGISTRATION_ID = "JS_SAMPLE_COURSclE_REGISTRATION";
 const { ScormClient } = require("scormcloud-client");
 
+async function deleteCourse(req, res) {
+  const client = new ScormClient(APP_ID, SECRET_KEY, "delete:course");
+  await client.deleteCourse(COURSE_ID);
+  res.status(200);
+}
 
+module.exports = {
+  deleteCourse,
+};

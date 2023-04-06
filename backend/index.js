@@ -6,6 +6,7 @@ const port = 8000;
 const multer = require("multer");
 const fs = require("fs");
 const cors = require("cors");
+const { deleteCourse } = require("./scorm-provider/delete-course");
 
 app.use(express.urlencoded());
 app.use(cors());
@@ -59,6 +60,8 @@ app.get("/course-link", async (req, res) => {
   const link = await getLaunchLink();
   res.send(link);
 });
+
+app.delete("/course", deleteCourse);
 
 // Start the server
 app.listen(port, () => {
