@@ -10,6 +10,7 @@ const {
   deleteCourse,
   createNewCourse,
 } = require("./scorm-provider/delete-course");
+const { updateCourseTitle } = require("./scorm-provider/course-status");
 
 app.use(express.urlencoded());
 app.use(cors());
@@ -66,6 +67,7 @@ app.get("/course-link", async (req, res) => {
 
 app.delete("/course", deleteCourse);
 app.post("/new-course", createNewCourse);
+app.put("/edit-course-title", updateCourseTitle);
 
 // Start the server
 app.listen(port, () => {
